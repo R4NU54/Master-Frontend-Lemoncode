@@ -1,5 +1,4 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 import path from 'node:path'
 import url from 'node:url'
@@ -7,10 +6,12 @@ import url from 'node:url'
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 export default {
-  context: path.resolve(__dirname, './src'),
+  context: path.resolve(__dirname, 'src'),
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx']
+  },
   entry: {
-    app: './index.js',
-    vendorStyles: ['../node_modules/bootstrap/dist/css/bootstrap.css']
+    app: './index.tsx'
   },
   output: {
     filename: '[name].[chunkhash].js',
@@ -19,41 +20,25 @@ export default {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
-      },
-      {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: ['style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|jpg|jpeg)$/,
         type: 'asset/resource'
       },
       {
-        test: /\.html$/i,
+        test: /\.html$/,
         loader: 'html-loader'
       }
     ]
   },
-  devServer: {
-    port: 8080
-  },
   plugins: [
     new HtmlWebpackPlugin({
+      template: './index.html',
       filename: 'index.html',
-      template: 'index.html',
       scriptLoading: 'blocking'
-    }),
-    new MiniCssExtractPlugin({
-      filename: '[name].[chunkhash].css',
-      chunkFilename: '[id].css'
     })
   ]
 }
